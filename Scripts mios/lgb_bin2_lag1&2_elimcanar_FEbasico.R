@@ -440,7 +440,7 @@ if( kcanaritos > 0 )
 
 #Saco junio
 
-dataset[fotomes!=202006,]
+dataset[foto_mes!=202006,]
 
 
 #cargo los datos donde voy a aplicar el modelo
@@ -454,6 +454,10 @@ dataset[ , clase01:= ifelse( clase_ternaria=="CONTINUA", 0, 1 ) ]
 
 #los campos que se van a utilizar
 campos_buenos  <- setdiff( colnames(dataset), c("clase_ternaria","clase01", campos_malos) )
+
+
+##############################################################
+#despues de esto es mucho tiempo#
 
 #dejo los datos en el formato que necesita LightGBM
 #uso el weight como un truco ESPANTOSO para saber la clase real
