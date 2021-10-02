@@ -249,6 +249,11 @@ campos_lags  <- setdiff(  colnames(dataset) ,  c("clase_ternaria","clase01", "nu
 
 #Hago feature Engineering en este mismo script
 
+#Saco junio
+
+dataset[foto_mes!=202006,]
+
+
 #primero hago el FE visto en clases
 
 #acomodo los errores del dataset menos junio que es eliminado
@@ -437,11 +442,6 @@ if( kcanaritos > 0 )
 {
   for( i  in 1:kcanaritos)  dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset))]
 }
-
-#Saco junio
-
-dataset[foto_mes!=202006,]
-
 
 #cargo los datos donde voy a aplicar el modelo
 dapply  <- copy( dataset[  foto_mes==kmes_apply ] )
