@@ -251,7 +251,7 @@ campos_lags  <- setdiff(  colnames(dataset) ,  c("clase_ternaria","clase01", "nu
 
 #Saco junio
 
-dataset[foto_mes!=202006,]
+dataset <- dataset[foto_mes!=202006,]
 
 
 #primero hago el FE visto en clases
