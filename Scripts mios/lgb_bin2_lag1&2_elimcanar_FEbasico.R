@@ -45,7 +45,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 
 kscript         <- "761_lgb_lag1&2_elimcanar_FEbasico"
 
-karch_dataset    <- "./datasetsOri/paquete_premium_corregido_ext.csv.gz"
+karch_dataset    <- "./datasetsOri/paquete_premium.csv.gz"
 kmes_apply       <- 202101  #El mes donde debo aplicar el modelo
 kmes_train_hasta <- 202011  #Obvimente, solo puedo entrenar hasta 202011
 
