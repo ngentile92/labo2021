@@ -56,12 +56,12 @@ kBO_iter    <-  100   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet( 
-  makeNumericParam("learning_rate",    lower=    0.02 , upper=    0.06),
-  makeNumericParam("feature_fraction", lower=    0.1  , upper=    0.4),
-  makeIntegerParam("min_data_in_leaf", lower= 1000L   , upper= 8000L),
-  makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L),
-  makeNumericParam("prob_corte",       lower=    0.040, upper=    0.055)
-)
+  makeNumericParam("learning_rate",    lower=    0.02 , upper=    0.06),#hay que ampliar para abajo
+  makeNumericParam("feature_fraction", lower=    0.1  , upper=    0.4), #estamos ok 
+  makeIntegerParam("min_data_in_leaf", lower= 1000L   , upper= 8000L), #2000 a 4000
+  makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L), #ok este parametro
+  makeNumericParam("prob_corte",       lower=    0.040, upper=    0.055)#hay que ampliar para abajo
+  )
 
 campos_malos  <- c("mpasivos_margen","mcuentas_saldo","mautoservicio", "cpagomiscuentas", "mpagomiscuentas", "mtarjeta_visa_descuentos", "ctrx_quarter", "Master_mfinanciacion_limite", "Master_mconsumospesos", "Master_fultimo_cierre","Master_mpagominimo","Visa_mfinanciacion_limite","Visa_msaldopesos","Visa_mconsumospesos", "Visa_fultimo_cierre", "Visa_mpagospesos" )   #aqui se deben cargar todos los campos culpables del Data Drifting
 #Me fije cuando aparecian con datadrifting+por encima de canarios
