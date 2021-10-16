@@ -45,7 +45,7 @@ setwd( directory.root )
 
 
 
-kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 1009   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript         <- "822_epic"
 
@@ -77,7 +77,7 @@ hs <- makeParamSet(
   makeIntegerParam("num_leaves",       lower=  500L   , upper= 1400L)
 )
 
-campos_malos  <- c("mpasivos_margen","mcuentas_saldo","mautoservicio", "cpagomiscuentas", "mpagomiscuentas", "mtarjeta_visa_descuentos", "ctrx_quarter", "Master_mfinanciacion_limite", "Master_mconsumospesos", "Master_fultimo_cierre","Master_mpagominimo","Visa_mfinanciacion_limite","Visa_msaldopesos","Visa_mconsumospesos", "Visa_fultimo_cierre", "Visa_mpagospesos" )  
+campos_malos  <- c("mpasivos_margen","mcuentas_saldo","mautoservicio", "cpagomiscuentas", "mpagomiscuentas", "mtarjeta_visa_descuentos", "ctrx_quarter", "Master_mfinanciacion_limite", "Master_mconsumospesos", "Master_fultimo_cierre","Master_mpagominimo","Visa_mfinanciacion_limite","Visa_msaldopesos","Visa_mconsumospesos", "Visa_fultimo_cierre", "Visa_mpagospesos" )   #aqui se deben cargar todos los campos culpables del Data Drifting
 
 ksemilla_azar  <- 102191  #Aqui poner la propia semilla
 #------------------------------------------------------------------------------
@@ -268,7 +268,7 @@ fganancia_lgbm_meseta  <- function(probs, datos)
   tbl[ , gan_acum :=  cumsum( gan ) ]
   setorder( tbl, -gan_acum )   #voy por la meseta
   
-  gan  <- mean( tbl[ 1:10,  gan_acum] )  #meseta de tamaño 10
+  gan  <- mean( tbl[ 1:10,  gan_acum] )  #meseta de tama?o 10
   
   pos_meseta  <- tbl[ 1:10,  median(posicion)]
   VPOS_CORTE  <<- c( VPOS_CORTE, pos_meseta )
@@ -394,6 +394,41 @@ if( file.exists(klog) )
   tb_modelitos  <- dataset[  ,  c("numero_de_cliente","foto_mes"), with=FALSE ]
   fwrite( tb_modelitos, file= kmodelitos, sep= "," )
 }
+
+
+#creo vector con variables flash 
+
+tipom <- c("mtarjeta_visa_consumo","mprestamos_personales","mv_msaldototal","Visa_mpagominimo","mtarjeta_visa_consumo_lag1","mv_status04","mactivos_margen","mv_msaldopesos","mcuenta_corriente","mvr_msaldopesos","mv_mpagospesos","mvr_msaldototal","Visa_msaldototal","mdescubierto_preacordado","mtransferencias_recibidas_lag1","mcuenta_corriente_lag1","mrentabilidad","mrentabilidad_annual_lag2","mrentabilidad_lag1","mactivos_margen_lag1","mv_mconsumototal","mrentabilidad_annual","mv_mpagominimo","mvr_mpagospesos","mprestamos_personales_lag2","mrentabilidad_lag2","mv_mconsumospesos","mcaja_ahorro_dolares","mactivos_margen_lag2","Master_mlimitecompra_lag2","Master_fechaalta_lag2","mcomisiones_otras","Visa_mlimitecompra","Visa_msaldototal_delta1","mcomisiones_lag2","Visa_msaldototal_lag1","Visa_mconsumototal_lag1","mpayroll","mpayroll_lag1","mtransferencias_recibidas")
+tipoc <- c("ctarjeta_visa_transacciones","cpayroll_trx","cpayroll_trx_lag2","ccomisiones_otras","cpayroll_trx_lag1","ctarjeta_debito_transacciones","ctarjeta_debito_transacciones_lag1","cproductos_delta1","cextraccion_autoservicio","ctarjeta_visa_transacciones_lag1","ccaja_ahorro","ctarjeta_visa_transacciones_lag2","cproductos_delta2","cproductos","ccomisiones_otras_lag2","cprestamos_personales")
+
+#creo cocientes entre tipom y tipoc
+
+for (vcol in tipom){
+  for (vcol2 in tipoc) {
+    dataset[, paste0(vcol, "/",vcol2) := get(vcol)/get(vcol2)]
+  }
+}
+
+#creo cocientes entre tipom y tipom
+
+for (vcol in tipom){
+  for (vcol2 in tipom) {
+    if(vcol != vcol2){
+      dataset[, paste0(vcol, "/",vcol2) := get(vcol)/get(vcol2)]
+    }
+  }
+}
+
+#creo cocientes entre tipoc y tipoc
+
+for (vcol in tipoc){
+  for (vcol2 in tipoc) {
+    if(vcol != vcol2){
+      dataset[, paste0(vcol, "/",vcol2) := get(vcol)/get(vcol2)]
+    }
+  }
+}
+
 
 #agrego un quinto de canaritos
 for( i  in 1:(ncol(dataset)/5))  dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset))]
