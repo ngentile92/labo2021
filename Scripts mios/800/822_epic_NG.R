@@ -44,8 +44,7 @@ switch ( Sys.info()[['sysname']],
 setwd( directory.root )
 
 
-
-kexperimento  <- 1009   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 1006   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript         <- "822_epic"
 
@@ -56,7 +55,7 @@ kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
 ktest_mes_desde  <- 202011
 
-ktrain_subsampling  <- 0.15   #el undersampling que voy a hacer de los continua
+ktrain_subsampling  <- 0.1   #el undersampling que voy a hacer de los continua
 
 ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
 ktrain_mes_desde    <- 201901  
@@ -342,7 +341,7 @@ EstimarGanancia_lightgbm  <- function( x )
   #si tengo una ganancia superadora, genero el archivo para Kaggle
   if( ganancia > GLOBAL_ganancia_max)
   {
-    GLOBAL_ganancia_max  <<- ganancia  #asigno la nueva maxima ganancia a una variable GLOBAL, por eso el <<-
+    GLOBAL_ganancia_max  <<- ganancia  #asigno la nueva maxima  a una variable GLOBAL, por eso el <<-
     
     FullModelo( param_final )
     HemiModelos( param_final )
@@ -398,16 +397,7 @@ if( file.exists(klog) )
 
 #creo vector con variables flash 
 
-tipom <- c("mtarjeta_visa_consumo","mprestamos_personales","mv_msaldototal","Visa_mpagominimo","mtarjeta_visa_consumo_lag1","mv_status04","mactivos_margen","mv_msaldopesos","mcuenta_corriente","mvr_msaldopesos","mv_mpagospesos","mvr_msaldototal","Visa_msaldototal","mdescubierto_preacordado","mtransferencias_recibidas_lag1","mcuenta_corriente_lag1","mrentabilidad","mrentabilidad_annual_lag2","mrentabilidad_lag1","mactivos_margen_lag1","mv_mconsumototal","mrentabilidad_annual","mv_mpagominimo","mvr_mpagospesos","mprestamos_personales_lag2","mrentabilidad_lag2","mv_mconsumospesos","mcaja_ahorro_dolares","mactivos_margen_lag2","Master_mlimitecompra_lag2","Master_fechaalta_lag2","mcomisiones_otras","Visa_mlimitecompra","Visa_msaldototal_delta1","mcomisiones_lag2","Visa_msaldototal_lag1","Visa_mconsumototal_lag1","mpayroll","mpayroll_lag1","mtransferencias_recibidas")
-tipoc <- c("ctarjeta_visa_transacciones","cpayroll_trx","cpayroll_trx_lag2","ccomisiones_otras","cpayroll_trx_lag1","ctarjeta_debito_transacciones","ctarjeta_debito_transacciones_lag1","cproductos_delta1","cextraccion_autoservicio","ctarjeta_visa_transacciones_lag1","ccaja_ahorro","ctarjeta_visa_transacciones_lag2","cproductos_delta2","cproductos","ccomisiones_otras_lag2","cprestamos_personales")
-
-#creo cocientes entre tipom y tipoc
-
-for (vcol in tipom){
-  for (vcol2 in tipoc) {
-    dataset[, paste0(vcol, "/",vcol2) := get(vcol)/get(vcol2)]
-  }
-}
+tipom <- c("mcaja_ahorro","mdescubierto_preacordado_delta2","mtarjeta_visa_consumo","cpayroll_trx","mv_mpagospesos","mv_status01","ctrx_quarter_lag1","ctarjeta_visa_transacciones","mcaja_ahorro_lag1","ctarjeta_debito_transacciones","mpayroll","mvr_mpagospesos","mprestamos_personales_delta2","mcuenta_corriente","mprestamos_personales","cpayroll_trx_lag1")
 
 #creo cocientes entre tipom y tipom
 
@@ -418,17 +408,6 @@ for (vcol in tipom){
     }
   }
 }
-
-#creo cocientes entre tipoc y tipoc
-
-for (vcol in tipoc){
-  for (vcol2 in tipoc) {
-    if(vcol != vcol2){
-      dataset[, paste0(vcol, "/",vcol2) := get(vcol)/get(vcol2)]
-    }
-  }
-}
-
 
 #agrego un quinto de canaritos
 for( i  in 1:(ncol(dataset)/5))  dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset))]
@@ -535,6 +514,6 @@ system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
 #        wait=FALSE )
 
 
-quit( save="no" )
+#quit( save="no" )
 
 
